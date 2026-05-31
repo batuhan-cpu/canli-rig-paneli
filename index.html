@@ -3,37 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SANAL BİLGİSAYAR MİNİNG SUNUCU VE SERVER V5.5</title>
+    <title>BATUHAN MINING LTD - SUNUCU YÖNETİM PANELİ V6.0</title>
     <style>
-        body { background: #020617; color: #f7931a; font-family: monospace; margin: 0; padding: 20px; }
-        h1 { text-align: center; margin-bottom: 25px; font-size: 24px; text-shadow: 0 0 10px #f7931a; color: #fff; }
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px; max-width: 1600px; margin: 0 auto; }
+        body { background: #020617; color: #f7931a; font-family: monospace; margin: 0; padding: 10px; }
+        h1 { text-align: center; margin: 15px 0 5px 0; font-size: 24px; text-shadow: 0 0 10px #f7931a; color: #fff; }
+        
+        /* Sahte Reklam Alanları */
+        .fake-ad-top { background: linear-gradient(90deg, #1e1b4b, #311042); border: 2px dashed #3b82f6; border-radius: 6px; padding: 8px; text-align: center; font-size: 13px; color: #60a5fa; margin-bottom: 15px; font-weight: bold; text-shadow: 0 0 5px #3b82f6; }
+        .fake-ad-bottom { background: linear-gradient(90deg, #1c1917, #2d1313); border: 2px dashed #ef4444; border-radius: 6px; padding: 10px; text-align: center; font-size: 12px; color: #f87171; margin-top: 25px; cursor: pointer; }
+        .fake-ad-bottom:hover { background: #451a1a; }
+        
+        /* Toplam Kazanç Paneli */
+        .total-wallet-box { background: rgba(30, 41, 59, 0.8); border: 2px solid #22c55e; border-radius: 8px; max-width: 600px; margin: 0 auto 20px auto; padding: 12px; text-align: center; box-shadow: 0 0 15px rgba(34, 197, 94, 0.2); }
+        .total-title { font-size: 14px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+        .total-amount { font-size: 26px; color: #22c55e; font-weight: bold; margin: 5px 0; text-shadow: 0 0 10px rgba(34,197,94,0.5); }
+        
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(355px, 1fr)); gap: 15px; max-width: 1600px; margin: 0 auto; }
         .box { background: rgba(15,23,42,0.95); padding: 15px; border-radius: 8px; border: 1px solid #f7931a; box-shadow: 0 0 15px rgba(247,147,26,0.08); transition: all 0.3s; }
-        .crypto-title { font-size: 17px; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-top: 0; display: flex; justify-content: space-between; }
+        .crypto-title { font-size: 16px; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-top: 0; display: flex; justify-content: space-between; }
         .status-on { color: #10b981; font-size: 11px; }
         .info-row { margin: 8px 0; font-size: 13px; color: #cbd5e1; }
         .val { font-weight: bold; color: #fff; }
-        .money { color: #22c55e; font-weight: bold; font-size: 16px; }
+        .money { color: #22c55e; font-weight: bold; font-size: 15px; }
         .spec-title { background: #1e293b; color: #3b82f6; padding: 4px; font-size: 11px; font-weight: bold; margin-top: 12px; border-radius: 3px; text-align: center; }
-        .spec-list { font-size: 11px; color: #94a3b8; background: #000; padding: 6px; border-radius: 4px; border: 1px solid #1e293b; max-height: 100px; overflow-y: auto; }
+        .spec-list { font-size: 11px; color: #94a3b8; background: #000; padding: 6px; border-radius: 4px; border: 1px solid #1e293b; max-height: 95px; overflow-y: auto; }
         .fin-box { background: #0f172a; border: 1px solid #3b82f6; padding: 8px; margin-top: 10px; border-radius: 4px; font-size: 12px; }
         .watt-box { color: #f87171; font-weight: bold; }
-        .roi-box { background: #1e1b4b; border: 1px solid #818cf8; color: #c7d2fe; padding: 6px; text-align: center; font-weight: bold; font-size: 12px; margin-top: 10px; border-radius: 4px; }
-        .mini-chart { background: #000; border: 1px solid #1e293b; margin-top: 8px; border-radius: 4px; display: block; width: 100%; height: 55px; }
+        .roi-box { background: #1e1b4b; border: 1px solid #818cf8; color: #c7d2fe; padding: 6px; text-align: center; font-weight: bold; font-size: 11px; margin-top: 10px; border-radius: 4px; }
+        .mini-chart { background: #000; border: 1px solid #1e293b; margin-top: 8px; border-radius: 4px; display: block; width: 100%; height: 50px; }
+        
+        /* Canlı Konsol Log Ekranı */
+        .console-box { background: #000; border: 1px solid #334155; border-radius: 6px; max-width: 1600px; margin: 20px auto; padding: 10px; box-shadow: inset 0 0 10px #000; }
+        .console-title { font-size: 12px; color: #64748b; border-bottom: 1px solid #1e293b; padding-bottom: 4px; margin-bottom: 6px; font-weight: bold; }
+        .console-lines { font-size: 11px; color: #38bdf8; max-height: 120px; overflow-y: hidden; line-height: 1.5; }
+        
         @keyframes alarm-blink { 0% { border-color: #ef4444; box-shadow: 0 0 20px rgba(239,68,68,0.6); background: rgba(127,29,29,0.4); } 50% { border-color: #334155; box-shadow: none; background: rgba(15,23,42,0.95); } 100% { border-color: #ef4444; box-shadow: 0 0 20px rgba(239,68,68,0.6); background: rgba(127,29,29,0.4); } }
         .critical-alarm { animation: alarm-blink 1s infinite !important; }
     </style>
 </head>
 <body>
-    <h1>⚡ SANAL BİLGİSAYAR MİNİNG SUNUCU VE SERVER V5.5 ⚡</h1>
+
+    <div class="fake-ad-top">
+        🚀 SPONSORLU: BATUHAN CLOUD MINING AŞ. - %0 KOMİSYONLA BULUT MADENCİLİĞİ KİRALAMA HİZMETLERİ BAŞLADI! [TIKLA TEKLİF AL]
+    </div>
+
+    <h1>⚡ BATUHAN MINING LTD | GLOBAL DATA CENTER V6.0 ⚡</h1>
+    
+    <div class="total-wallet-box">
+        <div class="total-title">💰 TOPLAM MERKEZİ CÜZDAN BAKİYESİ (NET KÂR)</div>
+        <div id="total-money" class="total-amount">0.00 TL</div>
+        <div style="font-size: 12px; color: #cbd5e1;">Dolar Karşılığı: <span id="total-usd" style="color: #60a5fa; font-weight: bold;">$0.00</span> | Güncel Kur: 1 USD = 33.50 TL</div>
+    </div>
+
     <div class="dashboard-grid">
         
         <div id="box-etc" class="box" style="border-color: #627eea;">
-            <div class="crypto-title" style="color: #627eea;"><span>Ξ ETC POOL [192.168.1.11]</span> <span id="etc-status" class="status-on">● MINING</span></div>
+            <div class="crypto-title" style="color: #627eea;"><span>Ξ ETC POOL [Node-01]</span> <span id="etc-status" class="status-on">● MINING</span></div>
             <div class="info-row">PING: <span id="etc-ping" style="color:#60a5fa;">14ms</span> | HIZ: <span id="etc-hash" class="val">4.25 GH/s</span></div>
             <div class="info-row">CÜZDAN: <span id="etc-bal" class="money">0.0000 ETC</span></div>
             
-            <canvas id="etc-chart" class="mini-chart" width="350" height="55"></canvas>
+            <canvas id="etc-chart" class="mini-chart" width="350" height="50"></canvas>
 
             <div class="spec-title">💻 SANAL BİLGİSAYAR ÖZELLİKLERİ</div>
             <div class="spec-list">
@@ -44,17 +73,17 @@
             </div>
             <div class="fin-box">
                 <div class="info-row">⚡ TÜKETİM: <span id="etc-watt" class="watt-box">3450 W</span> | 🧾 FATURA: <span id="etc-bill" style="color:#f87171;">0.00 TL</span></div>
-                <div class="info-row" style="font-size:14px;">📈 NET KÂR (CEPTE KALAN): <span id="etc-net" style="color:#22c55e; font-weight:bold; text-shadow:0 0 5px #22c55e;">0.00 TL</span></div>
+                <div class="info-row">📈 NET KÂR: <span id="etc-net" style="color:#22c55e; font-weight:bold;">0.00 TL</span></div>
             </div>
             <div id="etc-roi" class="roi-box">AMORTİ SÜRESİ (ROI): HESAPLANIYOR...</div>
         </div>
 
         <div id="box-rvn" class="box" style="border-color: #ed4135;">
-            <div class="crypto-title" style="color: #ed4135;"><span>🦅 RVN POOL [192.168.1.12]</span> <span id="rvn-status" class="status-on">● MINING</span></div>
+            <div class="crypto-title" style="color: #ed4135;"><span>🦅 RVN POOL [Node-02]</span> <span id="rvn-status" class="status-on">● MINING</span></div>
             <div class="info-row">PING: <span id="rvn-ping" style="color:#60a5fa;">18ms</span> | HIZ: <span id="rvn-hash" class="val">385.20 MH/s</span></div>
             <div class="info-row">CÜZDAN: <span id="rvn-bal" class="money">0.00 RVN</span></div>
             
-            <canvas id="rvn-chart" class="mini-chart" width="350" height="55"></canvas>
+            <canvas id="rvn-chart" class="mini-chart" width="350" height="50"></canvas>
 
             <div class="spec-title">💻 SANAL BİLGİSAYAR ÖZELLİKLERİ</div>
             <div class="spec-list">
@@ -65,17 +94,17 @@
             </div>
             <div class="fin-box">
                 <div class="info-row">⚡ TÜKETİM: <span id="rvn-watt" class="watt-box">1980 W</span> | 🧾 FATURA: <span id="rvn-bill" style="color:#f87171;">0.00 TL</span></div>
-                <div class="info-row" style="font-size:14px;">📈 NET KÂR (CEPTE KALAN): <span id="rvn-net" style="color:#22c55e; font-weight:bold; text-shadow:0 0 5px #22c55e;">0.00 TL</span></div>
+                <div class="info-row">📈 NET KÂR: <span id="rvn-net" style="color:#22c55e; font-weight:bold;">0.00 TL</span></div>
             </div>
             <div id="rvn-roi" class="roi-box">AMORTİ SÜRESİ (ROI): HESAPLANIYOR...</div>
         </div>
 
         <div id="box-btc" class="box" style="border-color: #f7931a;">
-            <div class="crypto-title" style="color: #f7931a;"><span>₿ BTC POOL [192.168.1.13]</span> <span id="btc-status" class="status-on">● MINING</span></div>
+            <div class="crypto-title" style="color: #f7931a;"><span>₿ BTC POOL [Node-03]</span> <span id="btc-status" class="status-on">● MINING</span></div>
             <div class="info-row">PING: <span id="btc-ping" style="color:#60a5fa;">25ms</span> | HIZ: <span id="btc-hash" class="val">230 TH/s</span></div>
             <div class="info-row">CÜZDAN: <span id="btc-bal" class="money">0.00000000 BTC</span></div>
             
-            <canvas id="btc-chart" class="mini-chart" width="350" height="55"></canvas>
+            <canvas id="btc-chart" class="mini-chart" width="350" height="50"></canvas>
 
             <div class="spec-title">💻 SANAL BİLGİSAYAR ÖZELLİKLERİ</div>
             <div class="spec-list">
@@ -86,17 +115,17 @@
             </div>
             <div class="fin-box">
                 <div class="info-row">⚡ TÜKETİM: <span id="btc-watt" class="watt-box">3520 W</span> | 🧾 FATURA: <span id="btc-bill" style="color:#f87171;">0.00 TL</span></div>
-                <div class="info-row" style="font-size:14px;">📈 NET KÂR (CEPTE KALAN): <span id="btc-net" style="color:#22c55e; font-weight:bold; text-shadow:0 0 5px #22c55e;">0.00 TL</span></div>
+                <div class="info-row">📈 NET KÂR: <span id="btc-net" style="color:#22c55e; font-weight:bold;">0.00 TL</span></div>
             </div>
             <div id="btc-roi" class="roi-box">AMORTİ SÜRESİ (ROI): HESAPLANIYOR...</div>
         </div>
 
         <div id="box-sol" class="box" style="border-color: #14f195;">
-            <div class="crypto-title" style="color: #14f195;"><span>☀️ SOL POOL [192.168.1.14]</span> <span id="sol-status" class="status-on">● MINING</span></div>
+            <div class="crypto-title" style="color: #14f195;"><span>☀️ SOL POOL [Node-04]</span> <span id="sol-status" class="status-on">● MINING</span></div>
             <div class="info-row">PING: <span id="sol-ping" style="color:#60a5fa;">9ms</span> | HIZ: <span id="sol-hash" class="val">18.40 kSOL/s</span></div>
             <div class="info-row">CÜZDAN: <span id="sol-bal" class="money">0.0000 SOL</span></div>
             
-            <canvas id="sol-chart" class="mini-chart" width="350" height="55"></canvas>
+            <canvas id="sol-chart" class="mini-chart" width="350" height="50"></canvas>
 
             <div class="spec-title">💻 SANAL BİLGİSAYAR ÖZELLİKLERİ</div>
             <div class="spec-list">
@@ -107,11 +136,23 @@
             </div>
             <div class="fin-box">
                 <div class="info-row">⚡ TÜKETİM: <span id="sol-watt" class="watt-box">720 W</span> | 🧾 FATURA: <span id="sol-bill" style="color:#f87171;">0.00 TL</span></div>
-                <div class="info-row" style="font-size:14px;">📈 NET KÂR (CEPTE KALAN): <span id="sol-net" style="color:#22c55e; font-weight:bold; text-shadow:0 0 5px #22c55e;">0.00 TL</span></div>
+                <div class="info-row">📈 NET KÂR: <span id="sol-net" style="color:#22c55e; font-weight:bold;">0.00 TL</span></div>
             </div>
             <div id="sol-roi" class="roi-box">AMORTİ SÜRESİ (ROI): HESAPLANIYOR...</div>
         </div>
 
+    </div>
+
+    <div class="console-box">
+        <div class="console-title">🖥️ SYSTEM LIVE LOG TERMINAL</div>
+        <div id="console-lines" class="console-lines">
+            [SYS_INIT] Batuhan-CPU Mainframe Node Engine starting...<br>
+            [NETWORK] Connected to core pooling servers with 256-bit encryption.<br>
+        </div>
+    </div>
+
+    <div class="fake-ad-bottom">
+        ⚠️ DİKKAT: STOKLARLA SINIRLI! ASUS TUF GAMING RADEON RX 7700 XT VE MSI GEFORCE RTX SERİSİ EKRAN KARTLARINDA SEZON SONU DEV İNDİRİM BAŞLADI. REKLAMA TIKLA VE YENİ RIG'INI KURMAYA BAŞLA!
     </div>
 
     <script>
@@ -128,8 +169,31 @@
             sol: [45,47,44,48,46,45,49,47,44,46]
         };
 
+        const logs = [
+            "[SUCCESS] Block decrypted successfully on Node-01.",
+            "[INFO] Auto-overclock adjusted dynamically for Ryzen 9 7950X3D.",
+            "[SERVER] Ping stable. Data packets delivered to global crypto pool.",
+            "[HARDWARE] RTX 4090 Ti voltage optimization completed.",
+            "[SYS] Automated backup secured to GitHub Cloud.",
+            "[POOL] Accepted shares 100% verified by blockchain main network."
+        ];
+
+        function addLog() {
+            const consoleEl = document.getElementById('console-lines');
+            let randomLog = logs[Math.floor(Math.random() * logs.length)];
+            let timeStamp = new Date().toLocaleTimeString();
+            consoleEl.innerHTML += `[${timeStamp}] ${randomLog}<br>`;
+            
+            let lines = consoleEl.innerHTML.split('<br>');
+            if(lines.length > 6) {
+                lines.shift();
+                consoleEl.innerHTML = lines.join('<br>');
+            }
+        }
+
         function drawMiniChart(id, color) {
             const canvas = document.getElementById(`${id}-chart`);
+            if(!canvas) return;
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.beginPath();
@@ -138,7 +202,7 @@
             let spacing = canvas.width / (chartData[id].length - 1);
             for(let i = 0; i < chartData[id].length; i++) {
                 let x = i * spacing;
-                let y = canvas.height - (chartData[id][i] * 0.6);
+                let y = canvas.height - (chartData[id][i] * 0.5);
                 if(i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
             }
             ctx.stroke();
@@ -157,38 +221,44 @@
             const boxEl = document.getElementById(`box-${id}`);
             const statusEl = document.getElementById(`${id}-status`);
 
-            tempEl.innerText = temp + "°C";
-            document.getElementById(`${id}-cpu-fan`).innerText = fanSpeed + " RPM";
+            if(tempEl) tempEl.innerText = temp + "°C";
+            const fanEl = document.getElementById(`${id}-cpu-fan`);
+            if(fanEl) fanEl.innerText = fanSpeed + " RPM";
 
             if (temp >= 75) {
-                tempEl.style.color = "#ff0000";
-                statusEl.innerText = "⚠️ PROT. ACTIVE";
-                statusEl.style.color = "#ef4444";
-                boxEl.classList.add('critical-alarm');
+                if(tempEl) tempEl.style.color = "#ff0000";
+                if(statusEl) statusEl.innerText = "⚠️ PROT. ACTIVE";
+                if(statusEl) statusEl.style.color = "#ef4444";
+                if(boxEl) boxEl.classList.add('critical-alarm');
             } else {
-                tempEl.style.color = "#10b981";
-                statusEl.innerText = "● MINING";
-                statusEl.style.color = "#10b981";
-                boxEl.classList.remove('critical-alarm');
+                if(tempEl) tempEl.style.color = "#10b981";
+                if(statusEl) statusEl.innerText = "● MINING";
+                if(statusEl) statusEl.style.color = "#10b981";
+                if(boxEl) boxEl.classList.remove('critical-alarm');
             }
 
-            document.getElementById(`${id}-ping`).innerText = Math.floor(Math.random() * 10 + 8) + "ms";
+            const pingEl = document.getElementById(`${id}-ping`);
+            if(pingEl) pingEl.innerText = Math.floor(Math.random() * 10 + 8) + "ms";
 
             chartData[id].push(temp - 30);
             if(chartData[id].length > 15) chartData[id].shift();
             drawMiniChart(id, themeColor);
 
             let currentWatt = baseWatt + Math.floor(Math.random() * 40 - 20);
-            document.getElementById(`${id}-watt`).innerText = currentWatt + " W";
+            const wattEl = document.getElementById(`${id}-watt`);
+            if(wattEl) wattEl.innerText = currentWatt + " W";
             
             simulatedBills[id] += (currentWatt / 1000) * 0.05;
             netProfits[id] += (Math.random() * 15 + 10) * profitMultiplier; 
 
-            document.getElementById(`${id}-bill`).innerText = simulatedBills[id].toFixed(2) + " TL";
-            document.getElementById(`${id}-net`).innerText = netProfits[id].toFixed(2) + " TL";
+            const billEl = document.getElementById(`${id}-bill`);
+            if(billEl) billEl.innerText = simulatedBills[id].toFixed(2) + " TL";
+            const netEl = document.getElementById(`${id}-net`);
+            if(netEl) netEl.innerText = netProfits[id].toFixed(2) + " TL";
 
             if (roiSeconds[id] > 200) roiSeconds[id] -= Math.floor(Math.random() * 60 + 30);
-            document.getElementById(`${id}-roi`).innerText = "AMORTİ SÜRESİ (ROI): " + secondsToDH(roiSeconds[id]);
+            const roiEl = document.getElementById(`${id}-roi`);
+            if(roiEl) roiEl.innerText = "AMORTİ SÜRESİ (ROI): " + secondsToDH(roiSeconds[id]);
         }
 
         function updateMining() {
@@ -211,10 +281,20 @@
             document.getElementById('sol-bal').innerText = balances.sol.toFixed(4) + " SOL";
             document.getElementById('sol-hash').innerText = (18.40 + (Math.random() * 0.4 - 0.2)).toFixed(2) + " kSOL/s";
             handleHardwareAndFinance('sol', 720, 0.8, '#14f195');
+
+            // Toplam Bakiye Güncelleme
+            let totalTRY = netProfits.etc + netProfits.rvn + netProfits.btc + netProfits.sol;
+            let totalUSD = totalTRY / prices.usdTry;
+            document.getElementById('total-money').innerText = totalTRY.toFixed(2) + " TL";
+            document.getElementById('total-usd').innerText = "$" + totalUSD.toFixed(2);
+
+            if(Math.random() > 0.6) {
+                addLog();
+            }
         }
 
         setInterval(updateMining, 1000);
     </script>
 </body>
-              </html>
-
+                                              </html>
+                                              
