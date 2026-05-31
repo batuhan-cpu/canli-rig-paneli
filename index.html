@@ -2,299 +2,61 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BATUHAN MINING CORP. | MEGALODON V7.0 CONTROL CENTER</title>
+    <title>BATUHAN MINING - PRO V8.0</title>
     <style>
-        * { box-sizing: border-box; }
-        body { background: #020617; color: #38bdf8; font-family: 'Courier New', monospace; margin: 0; padding: 10px; overflow-x: hidden; }
-        
-        /* Matris Efekti Arka Planı için */
-        .matrix-bg { position: fixed; top:0; left:0; width:100vw; height:100vh; background: radial-gradient(circle, rgba(16,185,129,0.05) 0%, rgba(2,6,23,1) 80%); z-index: -1; pointer-events: none; }
-        
-        h1 { text-align: center; margin: 10px 0; font-size: 22px; color: #fff; text-shadow: 0 0 15px #0284c7; letter-spacing: 2px; }
-        
-        /* Dinamik Reklam Alanları */
-        .ad-banner { background: linear-gradient(90deg, #0f172a, #1e1b4b); border: 2px dashed #0284c7; border-radius: 8px; padding: 10px; text-align: center; font-size: 12px; color: #38bdf8; margin-bottom: 15px; font-weight: bold; text-shadow: 0 0 5px #0284c7; animation: pulse 2s infinite; }
-        
-        /* Dehşet Merkezi Cüzdan */
-        .wallet-container { background: rgba(15, 23, 42, 0.9); border: 2px double #22c55e; border-radius: 12px; max-width: 700px; margin: 0 auto 20px auto; padding: 15px; text-align: center; box-shadow: 0 0 25px rgba(34, 197, 94, 0.2); position: relative; overflow: hidden; }
-        .wallet-container::before { content: ''; position: absolute; top:-50%; left:-50%; width:200%; height:200%; background: linear-gradient(45deg, transparent, rgba(34,197,94,0.1), transparent); animation: btc-glow 6s infinite linear; pointer-events: none; }
-        .wallet-title { font-size: 12px; color: #a7f3d0; letter-spacing: 2px; }
-        .wallet-crypto { display: flex; justify-content: space-around; margin: 10px 0; border-bottom: 1px solid #1e293b; padding-bottom: 10px; font-size: 12px; }
-        .wallet-main-val { font-size: 32px; color: #22c55e; font-weight: bold; text-shadow: 0 0 15px rgba(34,197,94,0.6); margin: 5px 0; }
-        
-        /* Grid Düzeni */
-        .grid-system { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 15px; max-width: 1600px; margin: 0 auto; }
-        .rig-card { background: rgba(15, 23, 42, 0.95); border: 1px solid #0284c7; border-radius: 10px; padding: 15px; position: relative; box-shadow: 0 0 15px rgba(2,132,199,0.1); transition: all 0.3s ease; }
-        .rig-card:hover { border-color: #38bdf8; box-shadow: 0 0 20px rgba(56,189,248,0.2); }
-        
-        .card-header { font-size: 15px; font-weight: bold; display: flex; justify-content: space-between; border-bottom: 1px solid #1e293b; padding-bottom: 6px; }
-        .status-dot { font-size: 11px; background: rgba(16,185,129,0.15); color: #10b981; padding: 2px 6px; border-radius: 4px; border: 1px solid #10b981; }
-        
-        .data-line { margin: 8px 0; font-size: 13px; color: #cbd5e1; display: flex; justify-content: space-between; }
-        .data-line span.label { color: #94a3b8; }
-        .data-line span.value { color: #fff; font-weight: bold; }
-        
-        .spec-dropdown { background: #000; border: 1px solid #1e293b; border-radius: 5px; padding: 8px; font-size: 11px; color: #94a3b8; margin-top: 10px; }
-        .mini-graph { background: #020617; border: 1px solid #1e293b; width: 100%; height: 45px; margin-top: 8px; border-radius: 4px; }
-        
-        /* Canlı Terminal */
-        .terminal-panel { background: #000; border: 1px solid #334155; border-radius: 8px; max-width: 1600px; margin: 20px auto; padding: 12px; box-shadow: inset 0 0 15px #000; }
-        .term-title { font-size: 12px; color: #64748b; margin-bottom: 6px; font-weight: bold; display: flex; justify-content: space-between; }
-        .term-rows { font-size: 11px; color: #34d399; max-height: 100px; overflow-y: hidden; line-height: 1.6; }
-
-        /* DEHŞET HACK DEFENSE MODAL & ALARM */
-        @keyframes cyber-attack { 0% { background: rgba(2,6,23,1); } 50% { background: rgba(127,29,29,0.8); } 100% { background: rgba(2,6,23,1); } }
-        .under-attack { animation: cyber-attack 0.5s infinite !important; }
-        @keyframes card-burn { 0% { border-color: #ef4444; box-shadow: 0 0 25px #ef4444; background: rgba(69,26,26,0.9); } 50% { border-color: #000; box-shadow: none; } 100% { border-color: #ef4444; box-shadow: 0 0 25px #ef4444; background: rgba(69,26,26,0.9); } }
-        .card-melting { animation: card-burn 0.8s infinite !important; }
-        
-        /* GİZLİ YÖNETİM PANELİ (MÜKEMMELLİK BURADA) */
-        .admin-trigger { background: #1e293b; color: #64748b; text-align: center; padding: 10px; margin-top: 30px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; border: 1px solid #334155; }
-        .admin-trigger:hover { color: #fff; background: #334155; }
-        .admin-panel { background: #0f172a; border: 2px solid #38bdf8; border-radius: 10px; padding: 15px; margin: 15px auto; max-width: 800px; display: none; box-shadow: 0 0 30px rgba(56,189,248,0.3); }
-        .admin-title { font-size: 14px; color: #38bdf8; font-weight: bold; border-bottom: 1px solid #38bdf8; padding-bottom: 5px; margin-bottom: 15px; text-align: center; }
-        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
-        .admin-card { background: #020617; border: 1px solid #1e293b; padding: 10px; border-radius: 6px; }
-        .admin-card label { display: block; font-size: 11px; color: #94a3b8; margin-bottom: 4px; }
-        .admin-card input, .admin-card select { width: 100%; background: #0f172a; border: 1px solid #334155; color: #fff; padding: 5px; border-radius: 4px; font-family: monospace; font-size: 12px; }
-        .btn-cyber { background: #0284c7; color: #fff; border: none; padding: 8px 12px; width: 100%; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; font-family: monospace; }
-        .btn-cyber:hover { background: #0369a1; }
-        .btn-danger { background: #dc2626; }
-        .btn-danger:hover { background: #b91c1c; }
-
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-        @keyframes btc-glow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        body { background: #000; color: #0f0; font-family: monospace; margin: 0; padding: 10px; }
+        .ticker { background: #111; color: #ff0; padding: 5px; font-size: 14px; overflow: hidden; border: 1px solid #333; margin-bottom: 10px; }
+        .wallet { border: 2px solid #0f0; padding: 20px; text-align: center; font-size: 24px; margin-bottom: 20px; box-shadow: 0 0 20px #0f0; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .box { border: 1px solid #333; padding: 10px; background: #050505; }
+        .btn { background: #222; color: #fff; border: 1px solid #444; padding: 10px; margin-top: 5px; cursor: pointer; width: 100%; }
+        .btn:hover { background: #444; }
     </style>
 </head>
 <body>
-
-    <div class="matrix-bg"></div>
-
-    <div id="ad-top" class="ad-banner">
-        🔥 GLOBAL SPONSOR: BATUHAN CLOUD INDUSTRIAL SYSTEMS - AMERİKA VE SALİHLİ LOKASYONLU KİRALIK ASIC ODALARI AKTİFLEŞTİ!
+    <div class="ticker" id="ticker">PİYASA DURUMU: ANALİZ EDİLİYOR...</div>
+    <div class="wallet">TOPLAM KAZANÇ: <span id="total-money">0.00</span> TL</div>
+    
+    <div class="grid">
+        <div class="box">BTC RIG: <span id="hash-btc">0</span> TH/s</div>
+        <div class="box">ETH RIG: <span id="hash-eth">0</span> GH/s</div>
     </div>
 
-    <h1>⚡ BATUHAN MINING CORP. | BACKBONE SERVER NETWORK V7.0 ⚡</h1>
-
-    <div class="wallet-container" id="main-wallet">
-        <div class="wallet-title">💎 MERKEZİ ANA KASA NET KÂR HESABI</div>
-        <div id="total-try" class="wallet-main-val">0.00 TRY</div>
-        <div style="font-size: 12px; color: #94a3b8;">Dolar Karşılığı: <span id="total-usd" style="color:#22c55e; font-weight:bold;">$0.00</span> | Sistem Çarpanı: <span id="current-multiplier" style="color:#e11d48; font-weight:bold;">x1 (Normal)</span></div>
-        
-        <div class="wallet-crypto">
-            <div>₿ <span id="w-btc">0.000000</span> BTC</div>
-            <div>Ξ <span id="w-etc">0.0000</span> ETC</div>
-            <div>🦅 <span id="w-rvn">0.00</span> RVN</div>
-            <div>☀️ <span id="w-sol">0.00</span> SOL</div>
-        </div>
-    </div>
-
-    <div class="grid-system">
-        
-        <div class="rig-card" id="card-btc" style="border-color: #f7931a;">
-            <div class="card-header" style="color: #f7931a;"><span>₿ BTC NODE-01</span> <span class="status-dot" id="status-btc">RUNNING</span></div>
-            <div class="data-line"><span class="label">Hashrate:</span><span class="value" id="hash-btc">245.20 TH/s</span></div>
-            <div class="data-line"><span class="label">Sıcaklık / Fan:</span><span class="value" id="temp-btc" style="color:#10b981;">62°C / 4100 RPM</span></div>
-            <div class="data-line"><span class="label">Güç Tüketimi:</span><span class="value" style="color:#f87171;" id="watt-btc">3450 W</span></div>
-            <div class="data-line"><span class="label">Net Kazanç:</span><span class="value" style="color:#22c55e;" id="net-btc">0.00 TL</span></div>
-            <canvas id="graph-btc" class="mini-graph" width="350" height="45"></canvas>
-            <div class="spec-dropdown">
-                <strong>Donanım:</strong> 2x Antminer S21 Ultra Hydro<br>
-                <strong>İşlemci:</strong> Dual Cortex-A72 Overclocked<br>
-                <strong>Bağlantı:</strong> Salihli-OSB-Fiber-Node
-            </div>
-        </div>
-
-        <div class="rig-card" id="card-etc" style="border-color: #627eea;">
-            <div class="card-header" style="color: #627eea;"><span>Ξ ETC NODE-02</span> <span class="status-dot" id="status-etc">RUNNING</span></div>
-            <div class="data-line"><span class="label">Hashrate:</span><span class="value" id="hash-etc">4.82 GH/s</span></div>
-            <div class="data-line"><span class="label">Sıcaklık / Fan:</span><span class="value" id="temp-etc" style="color:#10b981;">65°C / 4400 RPM</span></div>
-            <div class="data-line"><span class="label">Güç Tüketimi:</span><span class="value" style="color:#f87171;" id="watt-etc">2800 W</span></div>
-            <div class="data-line"><span class="label">Net Kazanç:</span><span class="value" style="color:#22c55e;" id="net-etc">0.00 TL</span></div>
-            <canvas id="graph-etc" class="mini-graph" width="350" height="45"></canvas>
-            <div class="spec-dropdown">
-                <strong>Donanım:</strong> 8x AMD Radeon TUF RX 7900 XTX 24GB<br>
-                <strong>İşlemci:</strong> AMD Ryzen 9 7950X3D (Liquid Cooled)<br>
-                <strong>RAM:</strong> 32GB DDR4 Corsair Vengeance Pro
-            </div>
-        </div>
-
-        <div class="rig-card" id="card-rvn" style="border-color: #ef4444;">
-            <div class="card-header" style="color: #ef4444;"><span>🦅 RVN NODE-03</span> <span class="status-dot" id="status-rvn">RUNNING</span></div>
-            <div class="data-line"><span class="label">Hashrate:</span><span class="value" id="hash-rvn">410.50 MH/s</span></div>
-            <div class="data-line"><span class="label">Sıcaklık / Fan:</span><span class="value" id="temp-rvn" style="color:#10b981;">59°C / 3800 RPM</span></div>
-            <div class="data-line"><span class="label">Güç Tüketimi:</span><span class="value" style="color:#f87171;" id="watt-rvn">1850 W</span></div>
-            <div class="data-line"><span class="label">Net Kazanç:</span><span class="value" style="color:#22c55e;" id="net-rvn">0.00 TL</span></div>
-            <canvas id="graph-rvn" class="mini-graph" width="350" height="45"></canvas>
-            <div class="spec-dropdown">
-                <strong>Donanım:</strong> 6x MSI GeForce RTX 4090 Suprim X<br>
-                <strong>İşlemci:</strong> AMD Ryzen 7 9800X3D Performance Node<br>
-                <strong>Klavye Bağlantı:</strong> Claw's Spectrum K1 Panel Sync
-            </div>
-        </div>
-
-        <div class="rig-card" id="card-sol" style="border-color: #14f195;">
-            <div class="card-header" style="color: #14f195;"><span>☀️ SOL NODE-04</span> <span class="status-dot" id="status-sol">RUNNING</span></div>
-            <div class="data-line"><span class="label">Hashrate:</span><span class="value" id="hash-sol">22.10 kSOL/s</span></div>
-            <div class="data-line"><span class="label">Sıcaklık / Fan:</span><span class="value" id="temp-sol" style="color:#10b981;">54°C / 3200 RPM</span></div>
-            <div class="data-line"><span class="label">Güç Tüketimi:</span><span class="value" style="color:#f87171;" id="watt-sol">950 W</span></div>
-            <div class="data-line"><span class="label">Net Kazanç:</span><span class="value" style="color:#22c55e;" id="net-sol">0.00 TL</span></div>
-            <canvas id="graph-sol" class="mini-graph" width="350" height="45"></canvas>
-            <div class="spec-dropdown">
-                <strong>Sistem:</strong> Dedicated Solana Validator Node<br>
-                <strong>İşlemci:</strong> AMD Ryzen 9 9950X Extreme Edition<br>
-                <strong>Depolama:</strong> 4TB NVMe PCIe 5.0 SSD (Sustained)
-            </div>
-        </div>
-
-    </div>
-
-    <div class="terminal-panel">
-        <div class="term-title"><span>🖥️ BACKBONE LOG STREAMER</span> <span id="defense-status" style="color:#10b981;">🛡️ FIREWALL ACTIVE</span></div>
-        <div id="term-box" class="term-rows">
-            [SYSTEM] Core kernels initialized successfully.<br>
-            [NETWORK] Secure tunnel set up at node port 9595 via Termux bridge.<br>
-        </div>
-    </div>
-
-    <div id="ad-bottom" class="ad-banner" style="border-color: #ef4444; color: #f87171;">
-        ⚠️ STOK ALARMI: ASUS RADEON RX 7700 XT STOKLARI VE PIONEER SES SİSTEMLERİNDE BATUHAN NETWORKE ÖZEL %40 KUPON KODU: "BATU-CPU"
-    </div>
-
-    <div class="admin-trigger" onclick="toggleAdminPanel()">⚙️ SİSTEM YÖNETİM PANELİNİ AÇ / KAPAT (GİZLİ KUMANDA)</div>
-
-    <div id="panel-admin" class="admin-panel">
-        <div class="admin-title">🛠️ REALTIME SIMULATION OVERRIDE MATRIX</div>
-        <div class="admin-grid">
-            <div class="admin-card">
-                <label>Sistem Hız Çarpanı (Kâr Oranı)</label>
-                <select id="adm-mult" onchange="changeMultiplier()">
-                    <option value="1">x1 (Normal Hız)</option>
-                    <option value="5">x5 (Hızlı Kazanç)</option>
-                    <option value="50">x50 (Çılgın Balina Modu)</option>
-                    <option value="1000">x1000 (Zengin Olduk Modu)</option>
-                </select>
-            </div>
-            <div class="admin-card">
-                <label>Sanal Odadaki Sıcaklık Ayarı</label>
-                <select id="adm-temp" onchange="triggerOverheat()">
-                    <option value="normal">Normal (Stabil 60°C)</option>
-                    <option value="burn">Yüksek Isı (78°C Kırmızı Alarm)</option>
-                </select>
-            </div>
-            <div class="admin-card">
-                <label>Üst Sponsor Reklam Metni</label>
-                <input type="text" id="adm-ad-top" value="BATUHAN CLOUD INDUSTRIAL SYSTEMS - YENİ ODALAR AÇILDI!" oninput="updateAds()">
-            </div>
-            <div class="admin-card">
-                <label>Siber Saldırı / Hack Simülatörü</label>
-                <button class="btn-cyber btn-danger" id="attack-btn" onclick="simulateAttack()">HACK SALDIRISI BAŞLAT!</button>
-            </div>
-        </div>
+    <div style="margin-top: 20px;">
+        <button class="btn" onclick="crashMarket()">MARKETİ ÇÖKERT (DÜŞÜR)</button>
+        <button class="btn" onclick="pumpMarket()">BOĞA PİYASASI (UÇUR)</button>
+        <button class="btn" onclick="resetWallet()" style="color:red;">KASAYI SIFIRLA</button>
     </div>
 
     <script>
-        let config = { multiplier: 1, overheat: false, underAttack: false };
-        let financial = { btc: 0, etc: 0, rvn: 0, sol: 0, tryTotal: 0 };
-        const basePrices = { btc: 2100000, etc: 950, rvn: 0.75, sol: 5800, usd: 33.50 };
+        let totalMoney = parseFloat(localStorage.getItem('batuhan_wallet')) || 0;
         
-        let graphHistory = { btc: [30,32,35,31,33], etc: [40,41,43,42,45], rvn: [20,25,22,28,26], sol: [50,52,51,55,53] };
-
-        function toggleAdminPanel() {
-            let p = document.getElementById('panel-admin');
-            p.style.display = p.style.display === 'block' ? 'none' : 'block';
+        function updateDisplay() {
+            document.getElementById('total-money').innerText = totalMoney.toLocaleString('tr-TR', {minimumFractionDigits: 2});
+            localStorage.setItem('batuhan_wallet', totalMoney);
         }
 
-        function changeMultiplier() {
-            config.multiplier = parseFloat(document.getElementById('adm-mult').value);
-            document.getElementById('current-multiplier').innerText = 'x' + config.multiplier;
-            addLog("[ADMIN] Kâr üretim motoru hızı " + config.multiplier + " katına çıkartıldı.");
+        function crashMarket() { 
+            totalMoney *= 0.5; 
+            document.getElementById('ticker').innerText = "KRİTİK UYARI: PİYASALAR ÇÖKÜYOR, BAKİYELER ERİDİ!";
+            updateDisplay(); 
         }
 
-        function triggerOverheat() {
-            config.overheat = document.getElementById('adm-temp').value === 'burn';
-            addLog(config.overheat ? "[WARNING] Soğutma valfleri kapatıldı! Sıcaklık yükseliyor!" : "[SUCCESS] Sıvı soğutma kompresörleri devreye girdi, sıcaklık dengelendi.");
+        function pumpMarket() { 
+            totalMoney += 50000; 
+            document.getElementById('ticker').innerText = "BOĞA PİYASASI BAŞLADI: YATIRIMCILAR ZENGİNLEŞTİ!";
+            updateDisplay(); 
         }
 
-        function updateAds() {
-            document.getElementById('ad-top').innerText = "🔥 SPONSORLU: " + document.getElementById('adm-ad-top').value;
-        }
+        function resetWallet() { totalMoney = 0; updateDisplay(); }
 
-        function simulateAttack() {
-            let btn = document.getElementById('attack-btn');
-            if (!config.underAttack) {
-                config.underAttack = true;
-                document.body.classList.add('under-attack');
-                btn.innerText = "SİBER DUVARLARI ÖR (KORUMAYI AÇ)";
-                document.getElementById('defense-status').innerText = "🚨 UNDER DDOS ATTACK!";
-                document.getElementById('defense-status').style.color = "#ef4444";
-                addLog("[CRITICAL] WARNING: DDOS ATTACK IN PROGRESS FROM RUSSIAN PROXY SERVERS!!");
-            } else {
-                config.underAttack = false;
-                document.body.classList.remove('under-attack');
-                btn.innerText = "HACK SALDIRISI BAŞLAT!";
-                document.getElementById('defense-status').innerText = "🛡️ FIREWALL ACTIVE";
-                document.getElementById('defense-status').style.color = "#10b981";
-                addLog("[SUCCESS] Anti-DDoS Quantum Shield activated. Bad packets dropped successfully.");
-            }
-        }
-
-        function addLog(msg) {
-            let box = document.getElementById('term-box');
-            let time = new Date().toLocaleTimeString();
-            box.innerHTML += `[${time}] ${msg}<br>`;
-            let arr = box.innerHTML.split('<br>');
-            if (arr.length > 6) { arr.shift(); box.innerHTML = arr.join('<br>'); }
-        }
-
-        function renderGraph(id, color) {
-            let canvas = document.getElementById(`graph-${id}`);
-            if(!canvas) return;
-            let ctx = canvas.getContext('2d');
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            ctx.beginPath();
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = color;
-            let step = canvas.width / (graphHistory[id].length - 1);
-            for(let i=0; i<graphHistory[id].length; i++) {
-                let x = i * step;
-                let y = canvas.height - (graphHistory[id][i] * 0.6);
-                if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-            }
-            ctx.stroke();
-        }
-
-        function loop() {
-            // Gelir Hesapları (Çarpan ile çarpılıyor)
-            financial.btc += (Math.random() * 0.000004) * config.multiplier;
-            financial.etc += (Math.random() * 0.002) * config.multiplier;
-            financial.rvn += (Math.random() * 0.8) * config.multiplier;
-            financial.sol += (Math.random() * 0.003) * config.multiplier;
-
-            document.getElementById('w-btc').innerText = financial.btc.toFixed(6);
-            document.getElementById('w-etc').innerText = financial.etc.toFixed(4);
-            document.getElementById('w-rvn').innerText = financial.rvn.toFixed(2);
-            document.getElementById('w-sol').innerText = financial.sol.toFixed(2);
-
-            let netBtcTry = financial.btc * basePrices.btc * 0.85;
-            let netEtcTry = financial.etc * basePrices.etc * 0.90;
-            let netRvnTry = financial.rvn * basePrices.rvn * 0.92;
-            let netSolTry = financial.sol * basePrices.sol * 0.88;
-
-            document.getElementById('net-btc').innerText = netBtcTry.toFixed(2) + " TL";
-            document.getElementById('net-etc').innerText = netEtcTry.toFixed(2) + " TL";
-            document.getElementById('net-rvn').innerText = netRvnTry.toFixed(2) + " TL";
-            document.getElementById('net-sol').innerText = netSolTry.toFixed(2) + " TL";
-
-            let total = netBtcTry + netEtcTry + netRvnTry + netSolTry;
-            document.getElementById('total-try').innerText = total.toFixed(2) + " TRY";
-            document.getElementById('total-usd').innerText = "$" + (total / basePrices.usd).toFixed(2);
-
-            // Donanım Yönetimi & Overheat Simülasyonu
-            let pools = ['btc', 'etc', 'rvn', 'sol'];
-            let colors = ['#f7931a', '#627eea', '#ef4444', '#14f195'];
-            
-            pools.forEach((p, idx) => {
-                let tBox = document.getElementById(`temp-${p}`);
-          
+        setInterval(() => {
+            // Gerçekçi değişkenlik: Bazen artar, bazen düşer
+            let delta = (Math.random() * 200) - 50; 
+            totalMoney += delta;
+            if(totalMoney < 0) totalMoney = 0;
+            updateDisplay();
+        }, 1000);
+    </script>
+</body>
+</html>
