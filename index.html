@@ -153,11 +153,11 @@
       clickCount++;
 
       // 1. Evet butonu her tıklamada ekranı kaplayacak kadar devasa büyür
-      let yesScale = 1 + (clickCount * 0.7);
+      let yesScale = 1 + (clickCount * 0.20);
       btnYes.style.transform = `scale(${yesScale})`;
 
       // 2. Hayır butonu gittikçe küçülür
-      let noScale = Math.max(0.2, 1 - (clickCount * 0.15));
+      let noScale = Math.max(0.2, 1 - (clickCount * 0.19));
       btnNo.style.transform = `scale(${noScale})`;
 
       // 3. Hayır butonu ekran boşluklarında rastgele yer değiştirir
