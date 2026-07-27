@@ -91,9 +91,9 @@
       position: absolute;
       right: 20px;
       box-shadow: 0 4px 15px rgba(220, 53, 69, 0.5);
-      transition: top 0.1s ease-out, left 0.1s ease-out;
+      transition: all 0.12s ease-out;
       touch-action: none;
-      z-index: 9999;
+      z-index: 99999;
     }
 
     /* KALP CANVAS KISMI */
@@ -104,7 +104,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      z-index: 10000;
+      z-index: 100000;
       background: #000;
     }
 
@@ -120,7 +120,6 @@
   <!-- TEKLİF KARTI -->
   <div class="card" id="main-card">
     <div class="img-box">
-      <!-- Sorunsuz çalışan tatlı kedi görseli -->
       <img src="https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=500&auto=format&fit=crop" alt="kedi">
     </div>
     <h2>Beni sevdin mi sevmedin mi orasını bilmem, benimle artık canım cicim aylarına geçmeye ne dersin? Benimle çıkar mısın? ❤️</h2>
@@ -136,7 +135,7 @@
   </div>
 
   <script>
-    // --- 1. ASLA EKRANDAN KAYBOLMAYAN HIZLI KAÇAN HAYIR BUTONU ---
+    // --- 1. KESİNLİKLE EKRAN İÇİNDE KALAN KAÇAN HAYIR BUTONU ---
     const btnNo = document.getElementById('btn-no');
 
     function moveNoButton(e) {
@@ -144,26 +143,28 @@
         e.preventDefault();
         e.stopPropagation();
       }
-      
-      const btnRect = btnNo.getBoundingClientRect();
-      const margin = 20;
 
-      const maxX = window.innerWidth - btnRect.width - margin;
-      const maxY = window.innerHeight - btnRect.height - margin;
+      // Ekranda butonun kaçabileceği %15 ile %85 arası güvenli alan (asla kenara/dışarı kaçamaz)
+      const paddingX = window.innerWidth * 0.15;
+      const paddingY = window.innerHeight * 0.15;
+      const availableWidth = window.innerWidth * 0.7 - 80;
+      const availableHeight = window.innerHeight * 0.7 - 40;
 
-      const randomX = Math.max(margin, Math.floor(Math.random() * maxX));
-      const randomY = Math.max(margin, Math.floor(Math.random() * maxY));
+      const randomX = Math.floor(paddingX + Math.random() * availableWidth);
+      const randomY = Math.floor(paddingY + Math.random() * availableHeight);
 
       btnNo.style.position = 'fixed';
       btnNo.style.left = randomX + 'px';
       btnNo.style.top = randomY + 'px';
     }
 
-    btnNo.addEventListener('mouseover', moveNoButton);
+    // Dokunmatik ve fare için tüm tetikleyiciler
     btnNo.addEventListener('touchstart', moveNoButton, { passive: false });
+    btnNo.addEventListener('pointerdown', moveNoButton);
+    btnNo.addEventListener('mouseover', moveNoButton);
     btnNo.addEventListener('click', moveNoButton);
 
-    // --- 2. EVET BUTONU VE VİDEODAKİ KODLARIN BİREBİR AYNISI ---
+    // --- 2. EVET BUTONU VE VİDEODAKİ KALP KODLARI ---
     const btnYes = document.getElementById('btn-yes');
     const mainCard = document.getElementById('main-card');
     const heartScreen = document.getElementById('heart-screen');
