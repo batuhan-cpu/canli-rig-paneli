@@ -64,18 +64,19 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 30px;
-      min-height: 60px;
+      gap: 20px;
+      min-height: 70px;
       position: relative;
     }
 
     button {
-      padding: 12px 32px;
-      font-size: 1.1rem;
+      padding: 16px 36px;
+      font-size: 1.2rem;
       font-weight: bold;
       border: none;
-      border-radius: 12px;
+      border-radius: 14px;
       cursor: pointer;
+      transition: all 0.2s ease;
     }
 
     #btn-yes {
@@ -88,12 +89,8 @@
     #btn-no {
       background-color: #dc3545;
       color: white;
-      position: absolute;
-      right: 20px;
       box-shadow: 0 4px 15px rgba(220, 53, 69, 0.5);
-      transition: all 0.12s ease-out;
-      touch-action: none;
-      z-index: 99999;
+      z-index: 5;
     }
 
     /* KALP CANVAS KISMI */
@@ -135,40 +132,48 @@
   </div>
 
   <script>
-    // --- 1. KESİNLİKLE EKRAN İÇİNDE KALAN KAÇAN HAYIR BUTONU ---
+    const btnYes = document.getElementById('btn-yes');
     const btnNo = document.getElementById('btn-no');
+    const mainCard = document.getElementById('main-card');
+    const heartScreen = document.getElementById('heart-screen');
 
-    function moveNoButton(e) {
+    let noClickCount = 0;
+    const noTexts = [
+      "Hayır",
+      "Emin misin?",
+      "Cidden mi?",
+      "Yalvarırım evet de :(",
+      "Kalbimi kırıyosun ama...",
+      "Şaka yapıyosun herhalde?",
+      "Son şans!",
+      "Bas şu evete artık! ❤️"
+    ];
+
+    // Hayır butonuna basıldıkça Evet büyür, Hayır yazıları değişir ve kaçar
+    function handleNoClick(e) {
       if (e) {
         e.preventDefault();
         e.stopPropagation();
       }
 
-      // Ekranda butonun kaçabileceği %15 ile %85 arası güvenli alan (asla kenara/dışarı kaçamaz)
-      const paddingX = window.innerWidth * 0.15;
-      const paddingY = window.innerHeight * 0.15;
-      const availableWidth = window.innerWidth * 0.7 - 80;
-      const availableHeight = window.innerHeight * 0.7 - 40;
+      noClickCount++;
 
-      const randomX = Math.floor(paddingX + Math.random() * availableWidth);
-      const randomY = Math.floor(paddingY + Math.random() * availableHeight);
+      // Evet butonunu her basışta belirgin şekilde büyüt
+      let currentScale = 1 + (noClickCount * 0.25);
+      btnYes.style.transform = `scale(${currentScale})`;
 
-      btnNo.style.position = 'fixed';
-      btnNo.style.left = randomX + 'px';
-      btnNo.style.top = randomY + 'px';
+      if (noClickCount < noTexts.length) {
+        btnNo.innerText = noTexts[noClickCount];
+      } else {
+        // Hayır alanı kalmayınca Hayır butonunu tamamen yok et, ekran tamamen Evet'e kalsın
+        btnNo.style.display = 'none';
+      }
     }
 
-    // Dokunmatik ve fare için tüm tetikleyiciler
-    btnNo.addEventListener('touchstart', moveNoButton, { passive: false });
-    btnNo.addEventListener('pointerdown', moveNoButton);
-    btnNo.addEventListener('mouseover', moveNoButton);
-    btnNo.addEventListener('click', moveNoButton);
+    btnNo.addEventListener('click', handleNoClick);
+    btnNo.addEventListener('touchstart', handleNoClick, { passive: false });
 
-    // --- 2. EVET BUTONU VE VİDEODAKİ KALP KODLARI ---
-    const btnYes = document.getElementById('btn-yes');
-    const mainCard = document.getElementById('main-card');
-    const heartScreen = document.getElementById('heart-screen');
-
+    // Evet butonuna basıldığında (veya ekran tamamen kaplandığında) 20 saniyelik orijinal kalp animasyonu başlar
     btnYes.addEventListener('click', function() {
       mainCard.style.display = 'none';
       heartScreen.style.display = 'block';
@@ -193,6 +198,7 @@
         HEIGHT = canvas.height = window.innerHeight;
       });
 
+      // Videodaki orijinal matematiksel kalp formülleri (h.push)
       let h = [];
       for (let i = 0; i < 210; i += 0.2) {
         h.push([
