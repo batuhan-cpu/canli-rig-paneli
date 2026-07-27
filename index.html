@@ -2,191 +2,251 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Ceylin ❤️</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
     body {
       background-color: #050508;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      height: 100vh;
+      width: 100vw;
       overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      color: #fff;
     }
+
+    /* KART KISMI */
+    .card {
+      background: rgba(15, 15, 25, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 30px 20px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      width: 90%;
+      max-width: 400px;
+      z-index: 10;
+      position: relative;
+    }
+
+    .img-box {
+      width: 100%;
+      max-height: 220px;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      margin-bottom: 25px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      min-height: 50px;
+      position: relative;
+    }
+
+    button {
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+
+    #btn-yes {
+      background-color: #28a745;
+      color: white;
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+    }
+
+    #btn-no {
+      background-color: #dc3545;
+      color: white;
+      position: absolute;
+      right: 20px;
+      transition: all 0.2s ease-out;
+      box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+      touch-action: none;
+    }
+
+    /* KALP CANVAS KISMI */
+    #heart-screen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 100;
+      background: #000;
+    }
+
     canvas {
       display: block;
+      width: 100%;
+      height: 100%;
     }
   </style>
 </head>
 <body>
 
-  <canvas id="alx"></canvas>
+  <!-- TEKLİF KARTI -->
+  <div class="card" id="main-card">
+    <div class="img-box">
+      <!-- Görsel linkini değiştirebilirsin -->
+      <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1ODR3dmI3bnRnbDV0a2l4eXgzcTFoazI4eHNvMm9ydnR2ZHZ3ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/c6kJ9yMriBI1YKP3Vc/giphy.gif" alt="kedi">
+    </div>
+    <h2>Benimle Çıkar mısın Ceylin? ❤️</h2>
+    <div class="btn-container" id="btn-box">
+      <button id="btn-yes">Evet</button>
+      <button id="btn-no">Hayır</button>
+    </div>
+  </div>
+
+  <!-- NEON KALP EKRANI -->
+  <div id="heart-screen">
+    <canvas id="canvas"></canvas>
+  </div>
 
   <script>
-    window.requestAnimationFrame =
-      window.requestAnimationFrame ||
-      window.webkitRequestAnimationFrame ||
-      window.mozRequestAnimationFrame ||
-      window.oRequestAnimationFrame ||
-      window.msRequestAnimationFrame ||
-      function (callback) {
-        window.setTimeout(callback, 1000 / 60);
-      };
+    // --- 1. HAYIR BUTONUNU KAÇIRMA MANTIĞI ---
+    const btnNo = document.getElementById('btn-no');
+    const btnBox = document.getElementById('btn-box');
 
-    let loaded = false;
+    function moveNoButton() {
+      const boxRect = btnBox.getBoundingClientRect();
+      const btnRect = btnNo.getBoundingClientRect();
 
-    let init = function () {
-      if (loaded) return;
-      loaded = true;
+      // Ekran genişliğine göre güvenli kaçış mesafesi
+      const maxX = window.innerWidth - btnRect.width - 20;
+      const maxY = window.innerHeight - btnRect.height - 20;
 
-      let canvas = document.getElementById("alx");
-      let ctx = canvas.getContext("2d");
+      const randomX = Math.max(10, Math.floor(Math.random() * maxX));
+      const randomY = Math.max(10, Math.floor(Math.random() * maxY));
 
-      let width = (canvas.width = window.innerWidth);
-      let height = (canvas.height = window.innerHeight);
+      btnNo.style.position = 'fixed';
+      btnNo.style.left = randomX + 'px';
+      btnNo.style.top = randomY + 'px';
+    }
 
-      let rand = Math.random;
+    btnNo.addEventListener('mouseover', moveNoButton);
+    btnNo.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      moveNoButton();
+    });
 
-      // Kalp denklemi noktaları
-      let heartPosition = function (rad) {
-        return [
-          Math.pow(Math.sin(rad), 3),
-          -(15 * Math.cos(rad) - 5 * Math.cos(2 * rad) - 2 * Math.cos(3 * rad) - Math.cos(4 * rad))
-        ];
-      };
+    // --- 2. EVET BUTONU VE NEON KALP ANİMASYONU ---
+    const btnYes = document.getElementById('btn-yes');
+    const mainCard = document.getElementById('main-card');
+    const heartScreen = document.getElementById('heart-screen');
 
-      let scaleAndTranslate = function (pos, sx, sy, dx, dy) {
-        return [dx + pos[0] * sx, dy + pos[1] * sy];
-      };
+    btnYes.addEventListener('click', function() {
+      mainCard.style.display = 'none';
+      heartScreen.style.display = 'block';
+      startHeartAnimation();
+    });
 
-      window.addEventListener("resize", function () {
+    // Videodaki tam matematiksel çizgi kalp algoritması
+    function startHeartAnimation() {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
         width = canvas.width = window.innerWidth;
         height = canvas.height = window.innerHeight;
-        ctx.fillStyle = "#050508";
-        ctx.fillRect(0, 0, width, height);
       });
 
-      let traceCount = 50;
-      let pointsOrigin = [];
-      let dr = 0.1;
+      let h = [];
+      const HEIGHT = height;
+      const WIDTH = width;
 
-      for (let i = 0; i < Math.PI * 2; i += dr) {
-        pointsOrigin.push(scaleAndTranslate(heartPosition(i), 15, 13, 0, 0));
-      }
-      for (let i = 0; i < Math.PI * 2; i += dr) {
-        pointsOrigin.push(scaleAndTranslate(heartPosition(i), 9, 7.5, 0, 0));
-      }
-      for (let i = 0; i < Math.PI * 2; i += dr) {
-        pointsOrigin.push(scaleAndTranslate(heartPosition(i), 5, 4, 0, 0));
+      // Formülasyon
+      for (let i = 0; i < 200; i++) {
+        let v = i * 0.1;
+        let x = 16 * Math.pow(Math.sin(v), 3);
+        let y = -(13 * Math.cos(v) - 5 * Math.cos(2 * v) - 2 * Math.cos(3 * v) - Math.cos(4 * v));
+        h.push({ x: x, y: y });
       }
 
-      let heartPointsCount = pointsOrigin.length;
-      let targetPoints = [];
-
-      let pulse = function (kx, ky) {
-        for (let i = 0; i < pointsOrigin.length; i++) {
-          targetPoints[i] = [];
-          targetPoints[i][0] = kx * pointsOrigin[i][0] + width / 2;
-          targetPoints[i][1] = ky * pointsOrigin[i][1] + height / 2;
-        }
-      };
-
-      let e = [];
-      for (let i = 0; i < heartPointsCount; i++) {
-        let x = rand() * width;
-        let y = rand() * height;
-        e[i] = {
+      let particles = [];
+      for (let i = 0; i < 400; i++) {
+        particles.push({
+          x: (Math.random() - 0.5) * WIDTH,
+          y: (Math.random() - 0.5) * HEIGHT,
+          target: h[i % h.length],
           vx: 0,
           vy: 0,
-          R: 2,
-          speed: rand() + 2,
-          q: ~~(rand() * heartPointsCount),
-          D: 2 * (i % 2) - 1,
-          force: 0.2 * rand() + 0.7,
-          f: "hsla(340, 100%, " + ~~(60 * rand() + 20) + "%, 0.3)",
-          trace: []
-        };
-        for (let k = 0; k < traceCount; k++) e[i].trace[k] = { x: x, y: y };
+          speed: Math.random() * 2 + 1,
+          color: 'rgba(255, 40, 100, ' + (Math.random() * 0.7 + 0.3) + ')'
+        });
       }
 
-      let config = {
-        traceK: 0.4,
-        timeDelta: 0.01
-      };
-
-      let time = 0;
-
-      let loop = function () {
-        let unpaused = time;
-        time += config.timeDelta;
-
-        // Atma efekti (Pulse)
-        let k = -Math.cos(time);
-        pulse((1 + k) * 0.5 + 0.5, (1 + k) * 0.5 + 0.5);
-
-        ctx.fillStyle = "rgba(5, 5, 8, 0.1)";
+      function render() {
+        ctx.fillStyle = 'rgba(5, 5, 8, 0.15)';
         ctx.fillRect(0, 0, width, height);
 
-        for (let i = e.length; i--; ) {
-          let u = e[i];
-          let q = targetPoints[u.q];
-          let dx = u.trace[0].x - q[0];
-          let dy = u.trace[0].y - q[1];
-          let length = Math.sqrt(dx * dx + dy * dy);
+        const cx = width / 2;
+        const cy = height / 2;
+        const scale = Math.min(width, height) / 45; // iPhone ekranları için tam sığacak ölçek
 
-          if (10 > length) {
-            if (0.95 < rand()) {
-              u.q = ~~(rand() * heartPointsCount);
-            } else {
-              if (0.99 < rand()) {
-                u.D *= -1;
-              }
-              u.q += u.D;
-              u.q %= heartPointsCount;
-              if (0 > u.q) {
-                u.q += heartPointsCount;
-              }
-            }
+        particles.forEach(p => {
+          let tx = p.target.x * scale;
+          let ty = p.target.y * scale;
+
+          let dx = tx - p.x;
+          let dy = ty - p.y;
+          let dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist > 1) {
+            p.vx += (dx / dist) * p.speed * 0.1;
+            p.vy += (dy / dist) * p.speed * 0.1;
           }
 
-          u.vx += (-dx / length) * u.speed;
-          u.vy += (-dy / length) * u.speed;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx *= 0.88;
+          p.vy *= 0.88;
 
-          u.trace[0].x += u.vx;
-          u.trace[0].y += u.vy;
+          ctx.beginPath();
+          ctx.strokeStyle = p.color;
+          ctx.lineWidth = 1.5;
+          ctx.moveTo(cx + p.x - p.vx * 3, cy + p.y - p.vy * 3);
+          ctx.lineTo(cx + p.x, cy + p.y);
+          ctx.stroke();
+        });
 
-          u.vx *= u.force;
-          u.vy *= u.force;
+        requestAnimationFrame(render);
+      }
 
-          for (let k = 0; k < u.trace.length - 1; ) {
-            let T = u.trace[k];
-            let N = u.trace[++k];
-            N.x -= config.traceK * (N.x - T.x);
-            N.y -= config.traceK * (N.y - T.y);
-          }
-
-          ctx.fillStyle = u.f;
-          for (let k = 0; k < u.trace.length; k++) {
-            ctx.fillRect(u.trace[k].x, u.trace[k].y, 1, 1);
-          }
-        }
-
-        window.requestAnimationFrame(loop, canvas);
-      };
-
-      loop();
-    };
-
-    let s = document.readyState;
-    if (s === "complete" || s === "loaded" || s === "interactive") {
-      init();
-    } else {
-      document.addEventListener("DOMContentLoaded", init, false);
+      render();
     }
   </script>
 </body>
