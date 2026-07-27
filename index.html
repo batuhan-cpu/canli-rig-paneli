@@ -3,190 +3,190 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ceylin'e Özel ✨</title>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <title>Ceylin ❤️</title>
   <style>
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      box-sizing: border-box;
     }
-
     body {
-      background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+      background-color: #050508;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
     }
-
-    .card {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 30px;
-      border-radius: 24px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      max-width: 420px;
-      width: 100%;
-      transition: all 0.3s ease;
-    }
-
-    h1 {
-      color: #2d3436;
-      font-size: 1.4rem;
-      margin-bottom: 25px;
-      line-height: 1.5;
-    }
-
-    .btn-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 15px;
-      min-height: 50px;
-      position: relative;
-    }
-
-    button {
-      padding: 12px 24px;
-      font-size: 1rem;
-      font-weight: 600;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: transform 0.2s, background-color 0.2s;
-    }
-
-    #yesBtn {
-      background-color: #00b894;
-      color: white;
-      box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
-    }
-
-    #yesBtn:hover {
-      transform: scale(1.05);
-      background-color: #00a182;
-    }
-
-    #noBtn {
-      background-color: #ff7675;
-      color: white;
-      box-shadow: 0 4px 15px rgba(255, 118, 117, 0.3);
-    }
-
-    .sub-text {
-      margin-top: 15px;
-      font-size: 0.9rem;
-      color: #e17055;
-      font-weight: 600;
-      min-height: 20px;
-    }
-
-    /* Gizli Kısım (Kabul Edince Açılacak) */
-    .result {
-      display: none;
-      animation: fadeIn 0.8s ease forwards;
-    }
-
-    .result img {
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 4px solid #ff7675;
-      margin-bottom: 15px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-    }
-
-    .result p {
-      color: #2d3436;
-      font-size: 1.1rem;
-      line-height: 1.6;
-      margin-top: 10px;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    canvas {
+      display: block;
     }
   </style>
 </head>
 <body>
 
-  <div class="card" id="mainCard">
-    <!-- Soru Ekranı -->
-    <div id="questionSection">
-      <h1>Ceylin, "Sen bir şeyler yapacan" demiştin ya... <br><br>Görüşmeyeli güvenini kazandım bence. Benimle sevgili olur musun? ❤️</h1>
-      
-      <div class="btn-container">
-        <button id="yesBtn" onclick="acceptOffer()">Kabul Ediyorum ✨</button>
-        <button id="noBtn" onclick="handleNo()">Hayır 🙄</button>
-      </div>
-
-      <div class="sub-text" id="subText"></div>
-    </div>
-
-    <!-- Kabul Edince Açılacak Ekran -->
-    <div class="result" id="resultSection">
-      <img src="foto.jpg" alt="Biz">
-      <h1>Seni Çook Seviyorum! ❤️</h1>
-      <p>Sonunda doğru butonu bulacağını biliyordum 😉<br>Seninle her anı paylaşmak ve daha çok tanımak için sabırsızlanıyorum!</p>
-    </div>
-  </div>
+  <canvas id="alx"></canvas>
 
   <script>
-    const noMessages = [
-      "Emin misin?",
-      "Bak 'bacısı olan erkekten olmaz' muhabbetini de kapattık ama!",
-      "Tekrar düşün Bence...",
-      "Boş yapma kabul et işte 😄",
-      "Son kez soruyorum?",
-      "İki kelimeyle tanıyamazsın, şans ver!",
-      "Pişman olursun bak!",
-      "I-ıh, kaçış yok!",
-      "Son şansın!"
-    ];
+    window.requestAnimationFrame =
+      window.requestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      window.oRequestAnimationFrame ||
+      window.msRequestAnimationFrame ||
+      function (callback) {
+        window.setTimeout(callback, 1000 / 60);
+      };
 
-    let clickCount = 0;
+    let loaded = false;
 
-    function handleNo() {
-      const noBtn = document.getElementById('noBtn');
-      const yesBtn = document.getElementById('yesBtn');
-      const subText = document.getElementById('subText');
+    let init = function () {
+      if (loaded) return;
+      loaded = true;
 
-      if (clickCount < noMessages.length) {
-        subText.innerText = noMessages[clickCount];
-        
-        // Hayır butonunu küçült
-        let currentScale = 1 - (clickCount * 0.1);
-        noBtn.style.transform = `scale(${Math.max(currentScale, 0.2)})`;
+      let canvas = document.getElementById("alx");
+      let ctx = canvas.getContext("2d");
 
-        // Evet butonunu hafif büyüt
-        let yesScale = 1 + (clickCount * 0.08);
-        yesBtn.style.transform = `scale(${yesScale})`;
+      let width = (canvas.width = window.innerWidth);
+      let height = (canvas.height = window.innerHeight);
 
-        clickCount++;
-      }
+      let rand = Math.random;
 
-      // 8 kere tıklayınca Hayır butonu tamamen kaybolur
-      if (clickCount >= noMessages.length) {
-        noBtn.style.display = 'none';
-        subText.innerText = "İşte bu kadar! Artık sadece 'Kabul Ediyorum' seçeneğin var 😉";
-      }
-    }
+      // Kalp denklemi noktaları
+      let heartPosition = function (rad) {
+        return [
+          Math.pow(Math.sin(rad), 3),
+          -(15 * Math.cos(rad) - 5 * Math.cos(2 * rad) - 2 * Math.cos(3 * rad) - Math.cos(4 * rad))
+        ];
+      };
 
-    function acceptOffer() {
-      document.getElementById('questionSection').style.display = 'none';
-      document.getElementById('resultSection').style.display = 'block';
+      let scaleAndTranslate = function (pos, sx, sy, dx, dy) {
+        return [dx + pos[0] * sx, dy + pos[1] * sy];
+      };
 
-      // Konfeti Efekti
-      confetti({
-        particleCount: 120,
-        spread: 70,
-        origin: { y: 0.6 }
+      window.addEventListener("resize", function () {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        ctx.fillStyle = "#050508";
+        ctx.fillRect(0, 0, width, height);
       });
+
+      let traceCount = 50;
+      let pointsOrigin = [];
+      let dr = 0.1;
+
+      for (let i = 0; i < Math.PI * 2; i += dr) {
+        pointsOrigin.push(scaleAndTranslate(heartPosition(i), 15, 13, 0, 0));
+      }
+      for (let i = 0; i < Math.PI * 2; i += dr) {
+        pointsOrigin.push(scaleAndTranslate(heartPosition(i), 9, 7.5, 0, 0));
+      }
+      for (let i = 0; i < Math.PI * 2; i += dr) {
+        pointsOrigin.push(scaleAndTranslate(heartPosition(i), 5, 4, 0, 0));
+      }
+
+      let heartPointsCount = pointsOrigin.length;
+      let targetPoints = [];
+
+      let pulse = function (kx, ky) {
+        for (let i = 0; i < pointsOrigin.length; i++) {
+          targetPoints[i] = [];
+          targetPoints[i][0] = kx * pointsOrigin[i][0] + width / 2;
+          targetPoints[i][1] = ky * pointsOrigin[i][1] + height / 2;
+        }
+      };
+
+      let e = [];
+      for (let i = 0; i < heartPointsCount; i++) {
+        let x = rand() * width;
+        let y = rand() * height;
+        e[i] = {
+          vx: 0,
+          vy: 0,
+          R: 2,
+          speed: rand() + 2,
+          q: ~~(rand() * heartPointsCount),
+          D: 2 * (i % 2) - 1,
+          force: 0.2 * rand() + 0.7,
+          f: "hsla(340, 100%, " + ~~(60 * rand() + 20) + "%, 0.3)",
+          trace: []
+        };
+        for (let k = 0; k < traceCount; k++) e[i].trace[k] = { x: x, y: y };
+      }
+
+      let config = {
+        traceK: 0.4,
+        timeDelta: 0.01
+      };
+
+      let time = 0;
+
+      let loop = function () {
+        let unpaused = time;
+        time += config.timeDelta;
+
+        // Atma efekti (Pulse)
+        let k = -Math.cos(time);
+        pulse((1 + k) * 0.5 + 0.5, (1 + k) * 0.5 + 0.5);
+
+        ctx.fillStyle = "rgba(5, 5, 8, 0.1)";
+        ctx.fillRect(0, 0, width, height);
+
+        for (let i = e.length; i--; ) {
+          let u = e[i];
+          let q = targetPoints[u.q];
+          let dx = u.trace[0].x - q[0];
+          let dy = u.trace[0].y - q[1];
+          let length = Math.sqrt(dx * dx + dy * dy);
+
+          if (10 > length) {
+            if (0.95 < rand()) {
+              u.q = ~~(rand() * heartPointsCount);
+            } else {
+              if (0.99 < rand()) {
+                u.D *= -1;
+              }
+              u.q += u.D;
+              u.q %= heartPointsCount;
+              if (0 > u.q) {
+                u.q += heartPointsCount;
+              }
+            }
+          }
+
+          u.vx += (-dx / length) * u.speed;
+          u.vy += (-dy / length) * u.speed;
+
+          u.trace[0].x += u.vx;
+          u.trace[0].y += u.vy;
+
+          u.vx *= u.force;
+          u.vy *= u.force;
+
+          for (let k = 0; k < u.trace.length - 1; ) {
+            let T = u.trace[k];
+            let N = u.trace[++k];
+            N.x -= config.traceK * (N.x - T.x);
+            N.y -= config.traceK * (N.y - T.y);
+          }
+
+          ctx.fillStyle = u.f;
+          for (let k = 0; k < u.trace.length; k++) {
+            ctx.fillRect(u.trace[k].x, u.trace[k].y, 1, 1);
+          }
+        }
+
+        window.requestAnimationFrame(loop, canvas);
+      };
+
+      loop();
+    };
+
+    let s = document.readyState;
+    if (s === "complete" || s === "loaded" || s === "interactive") {
+      init();
+    } else {
+      document.addEventListener("DOMContentLoaded", init, false);
     }
   </script>
 </body>
