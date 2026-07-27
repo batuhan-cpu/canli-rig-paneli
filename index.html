@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Ceylin ❤️</title>
+  <!-- Three.js Kütüphanesi (Görseldeki kodun çalışması için gerekli) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -12,7 +14,7 @@
       -webkit-tap-highlight-color: transparent;
     }
     body {
-      background-color: #050508;
+      background-color: #000;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       height: 100vh;
       width: 100vw;
@@ -25,10 +27,10 @@
 
     /* TEKLİF KARTI */
     .card {
-      background: rgba(18, 18, 30, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(18, 18, 30, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(16px);
-      padding: 40px 24px;
+      padding: 35px 24px;
       border-radius: 28px;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,0.8);
@@ -39,8 +41,8 @@
     }
 
     h2 {
-      font-size: 1.25rem;
-      margin-bottom: 35px;
+      font-size: 1.2rem;
+      margin-bottom: 30px;
       font-weight: 600;
       line-height: 1.5;
       color: #f0f0f0;
@@ -83,7 +85,7 @@
       transform-origin: center;
     }
 
-    /* VİDEODAKİ NEON KALP EKRANI */
+    /* THREE.JS NEON KALP EKRANI */
     #heart-screen {
       display: none;
       position: fixed;
@@ -93,28 +95,6 @@
       height: 100vh;
       z-index: 100000;
       background: #000;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
-
-    /* Videodaki Neon Kalp SVG Efekti */
-    .neon-heart {
-      width: 280px;
-      height: 280px;
-      filter: drop-shadow(0 0 12px #ff0055) drop-shadow(0 0 30px #ff0055) drop-shadow(0 0 60px #ff0055);
-      animation: pulse 1.2s infinite alternate ease-in-out;
-    }
-
-    @keyframes pulse {
-      0% {
-        transform: scale(0.98);
-        filter: drop-shadow(0 0 10px #ff0055) drop-shadow(0 0 25px #ff0055);
-      }
-      100% {
-        transform: scale(1.08);
-        filter: drop-shadow(0 0 18px #ff0055) drop-shadow(0 0 45px #ff0055) drop-shadow(0 0 75px #ff0055);
-      }
     }
   </style>
 </head>
@@ -129,14 +109,11 @@
     </div>
   </div>
 
-  <!-- VİDEODAKİ BİREBİR NEON KALP GÖRSELİ -->
-  <div id="heart-screen">
-    <svg class="neon-heart" viewBox="0 0 32 32">
-      <path fill="#ff0055" d="M16 28.5 C15.4 28.5 14.8 28.2 14.4 27.8 C9.2 22.8 2 15.8 2 9.5 C2 5.4 5.4 2 9.5 2 C12.2 2 14.7 3.4 16 5.6 C17.3 3.4 19.8 2 22.5 2 C26.6 2 30 5.4 30 9.5 C30 15.8 22.8 22.8 17.6 27.8 C17.2 28.2 16.6 28.5 16 28.5 Z"/>
-    </svg>
-  </div>
+  <!-- THREE.JS EKRANI -->
+  <div id="heart-screen"></div>
 
   <script>
+    // --- 1. BUTON HAREKETLERİ VE BÜYÜME/KÜÇÜLME MANTIĞI ---
     const btnYes = document.getElementById('btn-yes');
     const btnNo = document.getElementById('btn-no');
     const mainCard = document.getElementById('main-card');
@@ -152,22 +129,21 @@
 
       clickCount++;
 
-      // 1. Evet butonu her tıklamada ekranı kaplayacak kadar devasa büyür
-      let yesScale = 1 + (clickCount * 0.20);
+      // Evet butonu büyür
+      let yesScale = 1 + (clickCount * 0.6);
       btnYes.style.transform = `scale(${yesScale})`;
 
-      // 2. Hayır butonu gittikçe küçülür
-      let noScale = Math.max(0.2, 1 - (clickCount * 0.19));
+      // Hayır butonu küçülür
+      let noScale = Math.max(0.2, 1 - (clickCount * 0.15));
       btnNo.style.transform = `scale(${noScale})`;
 
-      // 3. Hayır butonu ekran boşluklarında rastgele yer değiştirir
+      // Hayır butonu rastgele kayar
       const randomX = (Math.random() - 0.5) * 160;
       const randomY = (Math.random() - 0.5) * 100;
       btnNo.style.position = 'relative';
       btnNo.style.left = `${randomX}px`;
       btnNo.style.top = `${randomY}px`;
 
-      // Çok küçüldüğünde hayır butonunu tamamen gizle
       if (clickCount >= 6) {
         btnNo.style.display = 'none';
       }
@@ -176,11 +152,108 @@
     btnNo.addEventListener('click', handleNoClick);
     btnNo.addEventListener('touchstart', handleNoClick, { passive: false });
 
-    // Evet butonuna basıldığında kart kaybolur ve videodaki neon kalp görseli açılır
+    // Evet'e basıldığında Three.js animasyonunu başlat
     btnYes.addEventListener('click', function() {
       mainCard.style.display = 'none';
-      heartScreen.style.display = 'flex';
+      heartScreen.style.display = 'block';
+      initThreeHeart();
     });
+
+    // --- 2. RESİMDEKİ KODUN (createHeartPath / THREE.JS) BİREBİR UYGULANMASI ---
+    function initThreeHeart() {
+      const container = document.getElementById('heart-screen');
+      const scene = new THREE.Scene();
+
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 30;
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(renderer.domElement);
+
+      const totalParticles = 8000;
+      const geometry = new THREE.BufferGeometry();
+      const positions = new Float32Array(totalParticles * 3);
+      const colors = new Float32Array(totalParticles * 3);
+
+      // SSS'deki Koda Birebir Sadık Kalan createHeartPath Fonksiyonu
+      function createHeartPath(particleIndex, totalParticles) {
+        const t = (particleIndex / totalParticles) * Math.PI * 2;
+        const scale = 2.2;
+
+        // Matematiksel Kalp Formülü (x ve y için)
+        const x = 16 * Math.pow(Math.sin(t), 3);
+        const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+
+        const finalX = x * (scale / 16);
+        const finalY = y * (scale / 16);
+        const z = Math.sin(t * 4) * 2;
+
+        const jitterStrength = 0.2;
+
+        return new THREE.Vector3(
+          finalX + (Math.random() - 0.5) * jitterStrength,
+          finalY + (Math.random() - 0.5) * jitterStrength,
+          z + (Math.random() - 0.5) * jitterStrength * 0.5
+        );
+      }
+
+      // Parçacık Pozisyonlarını ve Renklerini Doldurma
+      const colorPink = new THREE.Color(0xff007f);
+      const colorPurple = new THREE.Color(0x9d00ff);
+
+      for (let i = 0; i < totalParticles; i++) {
+        const vec = createHeartPath(i, totalParticles);
+        positions[i * 3] = vec.x;
+        positions[i * 3 + 1] = vec.y;
+        positions[i * 3 + 2] = vec.z;
+
+        // Pembe/Mor Neon Hibrit Renk Geçişi
+        const mixedColor = colorPink.clone().lerp(colorPurple, Math.random());
+        colors[i * 3] = mixedColor.r;
+        colors[i * 3 + 1] = mixedColor.g;
+        colors[i * 3 + 2] = mixedColor.b;
+      }
+
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      // Neon Parlama Noktaları (PointsMaterial)
+      const material = new THREE.PointsMaterial({
+        size: 0.22,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.85,
+        blending: THREE.AdditiveBlending
+      });
+
+      const heartPoints = new THREE.Points(geometry, material);
+      scene.add(heartPoints);
+
+      // Ekran Boyutu Değişirse Uyarla
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      // Animasyon Döngüsü
+      function animate() {
+        requestAnimationFrame(animate);
+
+        // Kalbin Yavaşça Dönmesi ve Nabız Gibi Atması Efekti
+        heartPoints.rotation.y += 0.008;
+        heartPoints.rotation.x = Math.sin(Date.now() * 0.001) * 0.1;
+        
+        const scalePulse = 1 + Math.sin(Date.now() * 0.003) * 0.05;
+        heartPoints.scale.set(scalePulse, scalePulse, scalePulse);
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+    }
   </script>
 </body>
 </html>
