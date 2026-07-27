@@ -53,7 +53,7 @@
     }
 
     h2 {
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       margin-bottom: 25px;
       font-weight: 600;
       line-height: 1.4;
@@ -120,7 +120,8 @@
   <!-- TEKLİF KARTI -->
   <div class="card" id="main-card">
     <div class="img-box">
-      <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1ODR3dmI3bnRnbDV0a2l4eXgzcTFoazI4eHNvMm9ydnR2ZHZ3ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/c6kJ9yMriBI1YKP3Vc/giphy.gif" alt="kedi">
+      <!-- Sorunsuz çalışan tatlı kedi görseli -->
+      <img src="https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=500&auto=format&fit=crop" alt="kedi">
     </div>
     <h2>Beni sevdin mi sevmedin mi orasını bilmem, benimle artık canım cicim aylarına geçmeye ne dersin? Benimle çıkar mısın? ❤️</h2>
     <div class="btn-container" id="btn-box">
@@ -147,7 +148,6 @@
       const btnRect = btnNo.getBoundingClientRect();
       const margin = 20;
 
-      // Ekranın tam görünen sınırları içinde tutma garantisi
       const maxX = window.innerWidth - btnRect.width - margin;
       const maxY = window.innerHeight - btnRect.height - margin;
 
@@ -192,7 +192,6 @@
         HEIGHT = canvas.height = window.innerHeight;
       });
 
-      // Videodaki VS Code ekranından birebir aktarılan h.push döngüleri
       let h = [];
       for (let i = 0; i < 210; i += 0.2) {
         h.push([
@@ -213,7 +212,6 @@
         ]);
       }
 
-      // Parçacıklar ve iz bırakan çizgi mantığı
       let particles = [];
       for (let i = 0; i < 600; i++) {
         let x = Math.random() * WIDTH;
